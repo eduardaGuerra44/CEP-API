@@ -1,3 +1,5 @@
+import Exceptions.caracteresExeption;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpResponse;
@@ -16,18 +18,26 @@ public class ConsumindoApi {
         String busca = cep.nextLine();
         String endereco = "https://viacep.com.br/ws/"+busca+"/json/";
 
+        if (busca.length() < 8 | busca.length() > 8){
+            throw new caracteresExeption("ERRO: Verifique se o cep há 8 caracteres");
+        }
 
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(endereco))
-                .build();
-
-        HttpResponse<String> response = client
-                .send(request, HttpResponse.BodyHandlers.ofString());
+try {
 
 
-        System.out.println(response.body());
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(endereco))
+            .build();
 
+    HttpResponse<String> response = client
+            .send(request, HttpResponse.BodyHandlers.ofString());
+
+    String json = response.body();
+    System.out.println(json);
+} catch (caracteresExeption e){
+    System.out.println(e.getMessage());
+}
     }
 }
